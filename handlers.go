@@ -16,8 +16,13 @@ func ShortenHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request", http.StatusBadRequest)
 		return
 	}
+	if !IsValidURL(req.URL) {
+		http.Error(w, "Invalid URL", http.StatusBadRequest)
+		return
+	}
 	code := GenerateCode(req.URL)
 	SaveURL(code, req.URL)
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"code": code})
 }
 
